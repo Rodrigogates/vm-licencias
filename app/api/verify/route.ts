@@ -80,5 +80,3 @@ export async function GET(request: Request) {
 
 Y añade estas variables al `.env.local`:
 ```
-HMAC_SECRET=SudoPutanVbox
-DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/1482843093190316246/ceklIm3s2MTpq5hyrM0Sb6VNQPlYlxkmzMgNzFD2hnwPimsiyi56AV1yNutnEhf8ejzX
