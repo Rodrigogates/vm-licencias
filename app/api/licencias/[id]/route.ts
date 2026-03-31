@@ -2,6 +2,8 @@
 import { supabase } from '@/lib/supabase'
 import { auth } from '@clerk/nextjs/server'
 
+export const dynamic = 'force-dynamic'
+
 // PATCH - actualizar estado de una licencia
 export async function PATCH(
     request: Request,

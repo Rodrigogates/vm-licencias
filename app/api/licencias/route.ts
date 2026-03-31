@@ -2,6 +2,8 @@
 import { supabase } from '@/lib/supabase'
 import { auth } from '@clerk/nextjs/server'
 
+export const dynamic = 'force-dynamic'
+
 // GET - listar todas las licencias
 export async function GET() {
     const { userId } = await auth()
