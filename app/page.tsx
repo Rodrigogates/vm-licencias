@@ -1,7 +1,8 @@
+//v2
 'use client'
 
 import { useEffect, useState } from 'react'
-import { UserButton } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
 
 interface Licencia {
   id: string
@@ -18,9 +19,11 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [nombre, setNombre] = useState('')
   const [notas, setNotas] = useState('')
+  const router = useRouter()
 
   const fetchLicencias = async () => {
     const res = await fetch('/api/licencias')
+    if (res.status === 401) { router.push('/login'); return }
     const data = await res.json()
     setLicencias(data)
     setLoading(false)
@@ -65,15 +68,22 @@ export default function Home() {
     fetchLicencias()
   }
 
+  const logout = async () => {
+    await fetch('/api/logout', { method: 'POST' })
+    router.push('/login')
+  }
+
   return (
       <main className="min-h-screen bg-gray-950 text-white p-8">
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl font-bold">Panel de Licencias VM</h1>
-            <UserButton />
+            <button onClick={logout}
+                    className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-sm">
+              Cerrar sesión
+            </button>
           </div>
 
-          {/* Crear licencia */}
           <div className="bg-gray-900 rounded-lg p-6 mb-8">
             <h2 className="text-lg font-semibold mb-4">Nueva licencia</h2>
             <div className="flex gap-4">
@@ -98,7 +108,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Lista de licencias */}
           <div className="bg-gray-900 rounded-lg overflow-hidden">
             <table className="w-full">
               <thead className="bg-gray-800">
