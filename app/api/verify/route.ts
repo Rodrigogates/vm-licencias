@@ -1,6 +1,8 @@
 ﻿import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
+export const dynamic = 'force-dynamic'
+
 const REPLAY_WINDOW = 5 * 60
 
 async function verifyHmac(payload: string, signature: string, secret: string): Promise<boolean> {
