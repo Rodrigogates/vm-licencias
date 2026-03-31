@@ -1,5 +1,5 @@
 ﻿import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { getSupabase } from '@/lib/supabase'
 import { auth } from '@clerk/nextjs/server'
 
 export const dynamic = 'force-dynamic'
@@ -9,6 +9,7 @@ export async function GET() {
     const { userId } = await auth()
     if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
+    const supabase = getSupabase()
     const { data, error } = await supabase
         .from('licencias')
         .select('*')
@@ -25,6 +26,7 @@ export async function POST(request: Request) {
 
     const { id, nombre, notas } = await request.json()
 
+    const supabase = getSupabase()
     const { data, error } = await supabase
         .from('licencias')
         .insert({ id, nombre, notas, status: 'activa' })

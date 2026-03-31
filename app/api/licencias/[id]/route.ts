@@ -4,7 +4,6 @@ import { auth } from '@clerk/nextjs/server'
 
 export const dynamic = 'force-dynamic'
 
-// PATCH - actualizar estado de una licencia
 export async function PATCH(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -16,11 +15,11 @@ export async function PATCH(
     const body = await request.json()
 
     const updateData: Record<string, unknown> = {}
-
     if (body.status) updateData.status = body.status
     if (body.machine_id !== undefined) updateData.machine_id = body.machine_id
     if (body.notas !== undefined) updateData.notas = body.notas
 
+    const supabase = getSupabase()
     const { data, error } = await supabase
         .from('licencias')
         .update(updateData)
@@ -32,7 +31,6 @@ export async function PATCH(
     return NextResponse.json(data)
 }
 
-// DELETE - eliminar licencia
 export async function DELETE(
     _request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -42,6 +40,7 @@ export async function DELETE(
 
     const { id } = await params
 
+    const supabase = getSupabase()
     const { error } = await supabase
         .from('licencias')
         .delete()

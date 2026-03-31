@@ -1,5 +1,5 @@
 ﻿import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { getSupabase } from '@/lib/supabase'
 
 export const dynamic = 'force-dynamic'
 
@@ -48,6 +48,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Firma inválida' }, { status: 401 })
     }
 
+    const supabase = getSupabase()
     const { data: licencia, error } = await supabase
         .from('licencias')
         .select('*')
