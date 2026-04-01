@@ -1,6 +1,5 @@
 ﻿import { NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
-import { auth } from '@clerk/nextjs/server'
 
 export const dynamic = 'force-dynamic'
 
@@ -8,9 +7,6 @@ export async function PATCH(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
-    const { userId } = await auth()
-    if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-
     const { id } = await params
     const body = await request.json()
 
@@ -35,9 +31,6 @@ export async function DELETE(
     _request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
-    const { userId } = await auth()
-    if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-
     const { id } = await params
 
     const supabase = getSupabase()

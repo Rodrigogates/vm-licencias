@@ -1,14 +1,9 @@
 ﻿import { NextResponse } from 'next/server'
 import { getSupabase } from '@/lib/supabase'
-import { auth } from '@clerk/nextjs/server'
 
 export const dynamic = 'force-dynamic'
 
-// GET - listar todas las licencias
 export async function GET() {
-    const { userId } = await auth()
-    if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-
     const supabase = getSupabase()
     const { data, error } = await supabase
         .from('licencias')
@@ -19,11 +14,7 @@ export async function GET() {
     return NextResponse.json(data)
 }
 
-// POST - crear nueva licencia
 export async function POST(request: Request) {
-    const { userId } = await auth()
-    if (!userId) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-
     const { id, nombre, notas } = await request.json()
 
     const supabase = getSupabase()

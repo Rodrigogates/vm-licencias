@@ -1,18 +1,29 @@
-﻿import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+﻿import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-const isPublicRoute = createRouteMatcher([
-    '/api/verify(.*)',
-])
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD!
 
-export default clerkMiddleware(async (auth, request) => {
-    if (!isPublicRoute(request)) {
-        await auth.protect()
+export function middleware(request: NextRequest) {
+    // Rutas públicas - no requieren auth
+    if (request.nextUrl.pathname.startsWith('/api/verify')) {
+        return NextResponse.next()
     }
-})
+
+    // Página de login
+    if (request.nextUrl.pathname === '/login') {
+        return NextResponse.next()
+    }
+
+    // Verificar cookie de sesión
+    const session = request.cookies.get('admin_session')?.value
+    if (session === ADMIN_PASSWORD) {
+        return NextResponse.next()
+    }
+
+    // Redirigir al login
+    return NextResponse.redirect(new URL('/login', request.url))
+}
 
 export const config = {
-    matcher: [
-        '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-        '/(api|trpc)(.*)',
-    ],
+    matcher: ['/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)'],
 }
