@@ -5,7 +5,8 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD!
 
 export function middleware(request: NextRequest) {
     // Rutas públicas - no requieren auth
-    if (request.nextUrl.pathname.startsWith('/api/verify')) {
+    if (request.nextUrl.pathname.startsWith('/api/verify') ||
+        request.nextUrl.pathname.startsWith('/api/login')) {
         return NextResponse.next()
     }
 
