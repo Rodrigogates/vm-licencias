@@ -4,6 +4,13 @@ import { getSupabase } from '@/lib/supabase'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
+
+    export async function GET() {
+        console.log('GET /api/licencias called')
+        console.log('SUPABASE URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+        const supabase = getSupabase()
+        // ... resto del código
+
     const supabase = getSupabase()
     const { data, error } = await supabase
         .from('licencias')
