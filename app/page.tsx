@@ -1,8 +1,16 @@
-//v2
+//v3 - client-side directo a Supabase + Edge Function para mutaciones
 'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
+const EDGE_URL = 'https://idcjfigguuwkpfknryrz.supabase.co/functions/v1/licencias-admin'
 
 interface Licencia {
   id: string
@@ -19,13 +27,33 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [nombre, setNombre] = useState('')
   const [notas, setNotas] = useState('')
+  const [adminPassword, setAdminPassword] = useState('')
   const router = useRouter()
 
+  const callEdge = async (body: object) => {
+    const res = await fetch(EDGE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${adminPassword}`
+      },
+      body: JSON.stringify(body)
+    })
+    return res
+  }
+
   const fetchLicencias = async () => {
-    const res = await fetch('/api/licencias')
-    if (res.status === 401) { router.push('/login'); return }
-    const data = await res.json()
-    setLicencias(data)
+    // Verificar sesión contra Render (solo para proteger el panel)
+    const authRes = await fetch('/api/licencias')
+    if (authRes.status === 401) { router.push('/login'); return }
+
+    const { data, error } = await supabase
+        .from('licencias')
+        .select('*')
+        .order('fecha_creacion', { ascending: false })
+
+    if (error) { console.error(error); return }
+    setLicencias(data ?? [])
     setLoading(false)
   }
 
@@ -33,38 +61,29 @@ export default function Home() {
 
   const crearLicencia = async () => {
     if (!nombre) return
-    const id = `vm-${Date.now()}`
-    await fetch('/api/licencias', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, nombre, notas }),
-    })
+    const res = await callEdge({ action: 'crear', nombre, notas })
+    if (!res.ok) { console.error('Error al crear'); return }
     setNombre('')
     setNotas('')
     fetchLicencias()
   }
 
   const cambiarEstado = async (id: string, status: string) => {
-    await fetch(`/api/licencias/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status }),
-    })
+    const res = await callEdge({ action: 'cambiarEstado', id, status })
+    if (!res.ok) console.error('Error al cambiar estado')
     fetchLicencias()
   }
 
   const resetearMachine = async (id: string) => {
-    await fetch(`/api/licencias/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ machine_id: null }),
-    })
+    const res = await callEdge({ action: 'resetear', id })
+    if (!res.ok) console.error('Error al resetear')
     fetchLicencias()
   }
 
   const eliminarLicencia = async (id: string) => {
     if (!confirm('¿Eliminar esta licencia?')) return
-    await fetch(`/api/licencias/${id}`, { method: 'DELETE' })
+    const res = await callEdge({ action: 'eliminar', id })
+    if (!res.ok) console.error('Error al eliminar')
     fetchLicencias()
   }
 
@@ -82,6 +101,17 @@ export default function Home() {
                     className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-sm">
               Cerrar sesión
             </button>
+          </div>
+
+          {/* Campo password para Edge Function */}
+          <div className="bg-gray-900 rounded-lg p-4 mb-4">
+            <input
+                className="bg-gray-800 rounded px-4 py-2 text-white w-72"
+                placeholder="Contraseña admin (para operaciones)"
+                type="password"
+                value={adminPassword}
+                onChange={e => setAdminPassword(e.target.value)}
+            />
           </div>
 
           <div className="bg-gray-900 rounded-lg p-6 mb-8">
