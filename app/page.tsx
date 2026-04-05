@@ -35,7 +35,8 @@ export default function Home() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${adminPassword}`
+        'Authorization': `Bearer ${adminPassword}`,
+        'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       },
       body: JSON.stringify(body)
     })
