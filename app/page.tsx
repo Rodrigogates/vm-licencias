@@ -1,4 +1,3 @@
-//v3 - client-side directo a Supabase + Edge Function para mutaciones
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -31,22 +30,20 @@ export default function Home() {
   const router = useRouter()
 
   const callEdge = async (body: object) => {
-    const callEdge = async (body: object) => {
-      const res = await fetch(EDGE_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
-          'x-admin-password': adminPassword
-        },
-        body: JSON.stringify(body)
-      })
-      return res
-    }
+    const res = await fetch(EDGE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+        'x-admin-password': adminPassword
+      },
+      body: JSON.stringify(body)
+    })
+    return res
+  }
 
   const fetchLicencias = async () => {
-    // Verificar sesión contra Render (solo para proteger el panel)
     const authRes = await fetch('/api/licencias')
     if (authRes.status === 401) { router.push('/login'); return }
 
@@ -106,7 +103,6 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Campo password para Edge Function */}
           <div className="bg-gray-900 rounded-lg p-4 mb-4">
             <input
                 className="bg-gray-800 rounded px-4 py-2 text-white w-72"
