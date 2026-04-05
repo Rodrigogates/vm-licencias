@@ -31,17 +31,19 @@ export default function Home() {
   const router = useRouter()
 
   const callEdge = async (body: object) => {
-    const res = await fetch(EDGE_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${adminPassword}`,
-        'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      },
-      body: JSON.stringify(body)
-    })
-    return res
-  }
+    const callEdge = async (body: object) => {
+      const res = await fetch(EDGE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+          'x-admin-password': adminPassword
+        },
+        body: JSON.stringify(body)
+      })
+      return res
+    }
 
   const fetchLicencias = async () => {
     // Verificar sesión contra Render (solo para proteger el panel)
