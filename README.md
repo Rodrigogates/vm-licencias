@@ -1,6 +1,6 @@
 # vm-licencias
 
-An OS-style system for provisioning and activating virtual machines through a licensing scheme, built to support controlled resale: each virtual machine only unlocks and becomes usable once it has a valid license, similar to how an operating system activation works.
+An OS-style system for provisioning and activating virtual machines through a licensing scheme, built for controlled resale to university students: each virtual machine only unlocks and becomes usable once the student has a valid license, similar to how an operating system activation works.
 
 ## Current status
 
@@ -8,9 +8,14 @@ Working front-end built with Next.js and TypeScript. The persistence/backend lay
 
 ## Features
 
-- Provisioning of new virtual machines.
+- Provisioning of new per-student virtual machine licenses.
 - License-based activation flow, aimed at controlling which machines are enabled for use.
-- Dashboard to view and manage provisioned machines.
+- Admin dashboard to view and manage issued licenses.
+
+## Next steps
+
+- Reconnect a persistence layer (database) so issuing and looking up licenses works end to end.
+- Show a visible error state in the UI when a request fails, instead of an indefinite loading state.
 
 ## Tech stack
 
