@@ -1,18 +1,18 @@
 # vm-licencias
 
-Sistema tipo SO para dar de alta y activar máquinas virtuales mediante un esquema de licencias, pensado para permitir su venta controlada: cada máquina virtual solo se desbloquea y puede usarse si cuenta con una licencia válida, de forma similar a como se activa un sistema operativo.
+An OS-style system for provisioning and activating virtual machines through a licensing scheme, built to support controlled resale: each virtual machine only unlocks and becomes usable once it has a valid license, similar to how an operating system activation works.
 
-## Estado actual
+## Current status
 
-Interfaz funcional construida con Next.js y TypeScript. La capa de persistencia/backend está en revisión — por el momento no hay una base de datos conectada, así que el foco está en la lógica de la interfaz y el flujo de alta y activación.
+Working front-end built with Next.js and TypeScript. The persistence/backend layer is under review — there is currently no database connected, so the focus is on the interface logic and the provisioning/activation flow.
 
-## Funcionalidades
+## Features
 
-- Alta de nuevas máquinas virtuales.
-- Flujo de activación por licencia, orientado a controlar qué máquinas están habilitadas para su uso.
-- Panel para visualizar y administrar las máquinas dadas de alta.
+- Provisioning of new virtual machines.
+- License-based activation flow, aimed at controlling which machines are enabled for use.
+- Dashboard to view and manage provisioned machines.
 
-## Stack técnico
+## Tech stack
 
 Next.js · TypeScript · Tailwind CSS · ESLint
 
